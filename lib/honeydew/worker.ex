@@ -94,7 +94,7 @@ defmodule Honeydew.Worker do
   @doc false
   def ready(ready), do: GenServer.cast(self(), {:ready, ready})
   @doc false
-  def job_finished(worker, job), do: GenServer.call(worker, {:job_finished, job})
+  def job_finished(worker, job), do: GenServer.call(worker, {:job_finished, job}, :infinity)
 
 
   defp do_module_init(%State{has_init_fcn: false} = state) do

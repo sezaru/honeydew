@@ -111,11 +111,14 @@ defmodule Honeydew.Queue do
   # Honeydew API
   #
 
-  def enqueue(queue_process, job), do: GenServer.call(queue_process, {:enqueue, job})
-  def filter(queue_process, filter), do: GenServer.call(queue_process, {:filter, filter})
-  def cancel(queue_process, job), do: GenServer.call(queue_process, {:cancel, job})
-  def resume(queue_process), do: GenServer.call(queue_process, :resume)
-  def suspend(queue_process), do: GenServer.call(queue_process, :suspend)
+  def enqueue(queue_process, job), do: GenServer.call(queue_process, {:enqueue, job}, :infinity)
+
+  def filter(queue_process, filter),
+    do: GenServer.call(queue_process, {:filter, filter}, :infinity)
+
+  def cancel(queue_process, job), do: GenServer.call(queue_process, {:cancel, job}, :infinity)
+  def resume(queue_process), do: GenServer.call(queue_process, :resume, :infinity)
+  def suspend(queue_process), do: GenServer.call(queue_process, :suspend, :infinity)
 
   def status(queue_process, opts) do
     timeout = Keyword.get(opts, :timeout, 5_000)

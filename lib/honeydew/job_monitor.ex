@@ -42,12 +42,18 @@ defmodule Honeydew.JobMonitor do
   # Internal API
   #
 
-  def claim(job_monitor, job), do: GenServer.call(job_monitor, {:claim, job})
-  def job_succeeded(job_monitor, result), do: GenServer.call(job_monitor, {:job_succeeded, result})
-  def job_failed(job_monitor, %Crash{} = reason), do: GenServer.call(job_monitor, {:job_failed, reason})
-  def status(job_monitor), do: GenServer.call(job_monitor, :status)
-  def progress(job_monitor, progress), do: GenServer.call(job_monitor, {:progress, progress})
+  def claim(job_monitor, job), do: GenServer.call(job_monitor, {:claim, job}, :infinity)
 
+  def job_succeeded(job_monitor, result),
+    do: GenServer.call(job_monitor, {:job_succeeded, result}, :infinity)
+
+  def job_failed(job_monitor, %Crash{} = reason),
+    do: GenServer.call(job_monitor, {:job_failed, reason}, :infinity)
+
+  def status(job_monitor), do: GenServer.call(job_monitor, :status, :infinity)
+
+  def progress(job_monitor, progress),
+    do: GenServer.call(job_monitor, {:progress, progress}, :infinity)
 
   def handle_call({:claim, job}, {worker, _ref}, %State{worker: nil} = state) do
     Honeydew.debug "[Honeydew] Monitor #{inspect self()} had job #{inspect job.private} claimed by worker #{inspect worker}"
